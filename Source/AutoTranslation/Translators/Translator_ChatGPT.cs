@@ -1,27 +1,27 @@
-﻿using RimWorld;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using RimWorld;
 using Verse;
 
 namespace AutoTranslation.Translators
 {
-    public class Translator_Claude : Translator_BaseOnlineAIModel
+    public class Translator_ChatGPT : Translator_BaseOnlineAIModel
     {
-        public override string Name => "Claude";
+        public override string Name => "ChatGPT";
+        protected virtual string modelsUrl => "https://api.openai.com/v1/models";
+        protected virtual string chatUrl => "https://api.openai.com/v1/chat/completions";
         public override List<string> GetModels()
         {
             try
             {
-                var url = "https://api.anthropic.com/v1/models";
-                var request = WebRequest.Create(url);
+                var request = WebRequest.Create(modelsUrl);
                 request.Method = "GET";
-                request.Headers.Add("x-api-key", APIKey);
-                request.Headers.Add("anthropic-version", AnthropicVersion);
+                request.Headers.Add("Authorization", "Bearer " + APIKey);
 
                 var raw = request.GetResponseAndReadText();
                 var models = raw.GetStringValuesFromJson("id");
@@ -37,24 +37,24 @@ namespace AutoTranslation.Translators
 
         protected override string GetResponseUnsafe(string text)
         {
-            var url = "https://api.anthropic.com/v1/messages";
             var requestBody = $@"{{
                 ""model"": ""{Model}"",
-                ""max_tokens"": 1024,
-                ""system"": ""{Prompt.EscapeJsonString()}"",
                 ""messages"": [
-                    {{
-                        ""role"": ""user"",
-                        ""content"": ""{text.EscapeJsonString()}""
-                    }}
+                  {{
+                    ""role"": ""system"",
+                    ""content"": ""{Prompt.EscapeJsonString()}""
+                  }},
+                  {{
+                    ""role"": ""user"",
+                    ""content"": ""{text.EscapeJsonString()}""
+                  }}
                 ]
             }}";
 
-            var request = WebRequest.Create(url);
+            var request = WebRequest.Create(chatUrl);
             request.Method = "POST";
             request.ContentType = "application/json";
-            request.Headers.Add("x-api-key", APIKey);
-            request.Headers.Add("anthropic-version", AnthropicVersion);
+            request.Headers.Add("Authorization", "Bearer " + APIKey);
 
             using (var sw = new StreamWriter(request.GetRequestStream()))
             {
@@ -63,7 +63,5 @@ namespace AutoTranslation.Translators
 
             return request.GetResponseAndReadText();
         }
-
-        private const string AnthropicVersion = "2023-06-01";
     }
 }

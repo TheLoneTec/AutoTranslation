@@ -15,22 +15,19 @@ using Verse.Noise;
 
 namespace AutoTranslation.Translators
 {
-    internal class Translator_Google : ITranslator
+    public class Translator_Google : Translator_BaseTraditional
     {
         private const string testUrl = "https://translate.google.com";
         private const string urlFormat = "https://translate.google.com/translate_a/single?client=gtx&sl={0}&tl={1}&dt=t&ie=UTF-8&oe=UTF-8&q={2}";
         private static readonly StringBuilder sb = new StringBuilder(1024);
         private string _cachedTranslateLanguage;
 
-        public string Name  => "Google";
-        private string StartLanguage => "auto";
+        public override string Name  => "Google";
 
-        private string TranslateLanguage => _cachedTranslateLanguage ?? (_cachedTranslateLanguage = GetTranslateLanguage());
+        public override string TranslateLanguage => _cachedTranslateLanguage ?? (_cachedTranslateLanguage = GetTranslateLanguage());
+        public override bool RequiresKey => false;
 
-        public bool Ready { get; private set; }
-        public bool RequiresKey => false;
-
-        public void Prepare()
+        public override void Prepare()
         {
 
             try
@@ -45,7 +42,7 @@ namespace AutoTranslation.Translators
             }
         }
 
-        public bool TryTranslate(string text, out string translated)
+        public override bool TryTranslate(string text, out string translated)
         {
             try
             {
@@ -62,6 +59,19 @@ namespace AutoTranslation.Translators
                 return false;
             }
         }
+
+        public override bool SupportsCurrentLanguage()
+        {
+            var lang = LanguageDatabase.activeLanguage;
+            if (lang == null)
+            {
+                Log.Warning(AutoTranslation.LogPrefix + "activeLanguage was null");
+                return false;
+            }
+
+            return TranslateLanguageGetter.TryGetValue(lang.LegacyFolderName, out var _);
+        }
+
 
         public static string GetResponseUnsafe(string url)
         {

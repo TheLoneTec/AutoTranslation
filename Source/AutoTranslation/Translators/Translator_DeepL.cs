@@ -13,26 +13,24 @@ using Verse;
 
 namespace AutoTranslation.Translators
 {
-    internal class Translator_DeepL : ITranslator
+    public class Translator_DeepL : Translator_BaseTraditional
     {
         private static readonly StringBuilder sb = new StringBuilder(1024);
         private string _cachedTranslateLanguage;
         protected virtual string url => $"https://api-free.deepl.com/v2/translate";
 
-        public virtual string Name => "DeepL";
-        public bool Ready { get; private set; }
-        public bool RequiresKey => true;
+        public override string Name => "DeepL";
+        public override bool RequiresKey => true;
+        public override string TranslateLanguage => _cachedTranslateLanguage ?? (_cachedTranslateLanguage = GetTranslateLanguage());
 
-        protected string TranslateLanguage => _cachedTranslateLanguage ?? (_cachedTranslateLanguage = GetTranslateLanguage());
-
-        public void Prepare()
+        public override void Prepare()
         {
             if (string.IsNullOrEmpty(Settings.APIKey))
                 return;
             Ready = true;
         }
 
-        public bool TryTranslate(string text, out string translated)
+        public override bool TryTranslate(string text, out string translated)
         {
             if (string.IsNullOrEmpty(text))
             {
@@ -43,7 +41,7 @@ namespace AutoTranslation.Translators
             {
                 translated = Parse(GetResponseUnsafe(url, new List<IMultipartFormSection>()
                 {
-                    new MultipartFormDataSection("auth_key", Settings.APIKey),
+                    new MultipartFormDataSection("auth_key", APIKey),
                     new MultipartFormDataSection("text", EscapePlaceholders(text)),
                     //new MultipartFormDataSection("source_lang", "EN"),
                     new MultipartFormDataSection("target_lang", TranslateLanguage),
@@ -65,6 +63,23 @@ namespace AutoTranslation.Translators
             return false;
         }
 
+        public override bool SupportsCurrentLanguage()
+        {
+            var lang = LanguageDatabase.activeLanguage?.LegacyFolderName;
+            if (lang == null)
+            {
+                Log.Warning(AutoTranslation.LogPrefix + "activeLanguage was null");
+                return false;
+            }
+
+            return _languageMap.ContainsKey(lang);
+        }
+
+        protected string APIKey =>
+            rotater == null ? (rotater = new APIKeyRotater(Settings.APIKey.Split(','))).Key : rotater.Key;
+
+        protected APIKeyRotater rotater = null;
+
 
         public static string GetResponseUnsafe(string url, List<IMultipartFormSection> form)
         {
@@ -85,17 +100,8 @@ namespace AutoTranslation.Translators
         }
         public static string Parse(string text, out string detectedLang)
         {
-            const string detectKey = "\"detected_source_language\":\"";
-            var startIdx = text.IndexOf(detectKey, StringComparison.Ordinal) + detectKey.Length;
-            var endIdx = startIdx + 1;
-            for (; endIdx < text.Length; endIdx++) if (text[endIdx] == '\"') break;
-            detectedLang = text.Substring(startIdx, endIdx - startIdx);
-
-            const string textKey = "\"text\":\"";
-            startIdx = text.IndexOf(textKey, StringComparison.Ordinal) + textKey.Length;
-            endIdx = text.LastIndexOf('\"');
-
-            return text.Substring(startIdx, endIdx - startIdx);
+            detectedLang = text.GetStringValueFromJson("detected_source_language");
+            return text.GetStringValueFromJson("text");
         }
 
         public static string EscapePlaceholders(string text)
@@ -110,47 +116,48 @@ namespace AutoTranslation.Translators
 
         private static string GetTranslateLanguage()
         {
-            if (LanguageDatabase.activeLanguage == null)
+            var lang = LanguageDatabase.activeLanguage?.LegacyFolderName;
+            if (lang == null)
             {
                 Log.Warning(AutoTranslation.LogPrefix + "activeLanguage was null");
                 return "EN";
             }
 
-            switch (LanguageDatabase.activeLanguage.LegacyFolderName)
-            {
-                case "Korean": return "KO";
-                //case "Catalan": return "ca";
-                case "ChineseSimplified": return "ZH";
-                //case "Traditional Chinese": return "zh-TW";
-                case "Czech": return "CS";
-                case "Danish": return "DA";
-                case "Dutch": return "NL";
-                case "Estonian": return "ET";
-                case "Finnish": return "FI";
-                case "French": return "FR";
-                case "German": return "DE";
-                case "Greek": return "EL";
-                case "Hungarian": return "HU";
-                case "Italian": return "IT";
-                case "Japanese": return "JA";
-                case "Norwegian": return "NB";
-                case "Polish": return "PL";
-                case "Portuguese": return "PT-PT";
-                case "PortugueseBrazilian": return "PT-BR";
-                case "Romanian": return "RO";
-                case "Russian": return "RU";
-                case "Slovak": return "SK";
-                case "SpanishLatin":
-                case "Spanish": return "ES";
-                case "Swedish": return "SV";
-                case "Turkish": return "TR";
-                case "Ukrainian": return "UK";
-                case "English": return "EN";
-                default:
-                    Log.Error(AutoTranslation.LogPrefix +
-                                $"Unsupported language: {LanguageDatabase.activeLanguage.FriendlyNameEnglish}, Please change the Translator.");
-                    return "EN";
-            }
+            if (_languageMap.TryGetValue(lang, out var result))
+                return result;
+
+            Log.Error(AutoTranslation.LogPrefix + $"Unsupported language: {lang} in DeepL, Please change to another translator.");
+            return "EN";
         }
+
+        private static readonly Dictionary<string, string> _languageMap = new Dictionary<string, string>
+        {
+            ["Korean"] = "KO",
+            ["ChineseSimplified"] = "ZH",
+            ["Czech"] = "CS",
+            ["Danish"] = "DA",
+            ["Dutch"] = "NL",
+            ["Estonian"] = "ET",
+            ["Finnish"] = "FI",
+            ["French"] = "FR",
+            ["German"] = "DE",
+            ["Greek"] = "EL",
+            ["Hungarian"] = "HU",
+            ["Italian"] = "IT",
+            ["Japanese"] = "JA",
+            ["Norwegian"] = "NB",
+            ["Polish"] = "PL",
+            ["Portuguese"] = "PT-PT",
+            ["PortugueseBrazilian"] = "PT-BR",
+            ["Romanian"] = "RO",
+            ["Russian"] = "RU",
+            ["Slovak"] = "SK",
+            ["SpanishLatin"] = "ES",
+            ["Spanish"] = "ES",
+            ["Swedish"] = "SV",
+            ["Turkish"] = "TR",
+            ["Ukrainian"] = "UK",
+            ["English"] = "EN"
+        };
     }
 }

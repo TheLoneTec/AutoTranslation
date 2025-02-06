@@ -10,7 +10,14 @@
     <AT_Setting_Note>주의: 아래 설정들은 재시작을 요구합니다</AT_Setting_Note>
     <AT_Setting_SelectEngine>번역 엔진 선택 (기본: Google):</AT_Setting_SelectEngine>
     <AT_Setting_RequiresAPIKey>이 번역 엔진을 사용하기 위해서는 API Key가 필요합니다.</AT_Setting_RequiresAPIKey>
+    <AT_Setting_RequiresAPIKey_Tooltip>여러 API 키를 교대로 사용하도록 하고 싶다면 ','문자로 구분하여 입력하세요.</AT_Setting_RequiresAPIKey_Tooltip>
     <AT_Setting_Test>번역문에 '::TEST::' 추가 (테스트용)</AT_Setting_Test>
+    <AT_Setting_TestTranslation>&lt;= 번역 테스트</AT_Setting_TestTranslation>
+    <AT_Message_LanguageNotSupported>이 번역기는 한국어를 지원하지 않습니다! 다른 번역기를 선택해주세요.</AT_Message_LanguageNotSupported>
+    <AT_Setting_SelectModel>선택된 모델: </AT_Setting_SelectModel>
+    <AT_Setting_SelectModelNone>*없음* (모델을 선택해주세요)</AT_Setting_SelectModelNone>
+    <AT_Setting_NoModelFound>검색된 모델이 없습니다! API 키를 다시 확인해주세요.</AT_Setting_NoModelFound>
+    <AT_Setting_CustomPrompt>사용자 지정 시스템 프롬프트: </AT_Setting_CustomPrompt>
 
     <AT_Setting_Misc>::기타::</AT_Setting_Misc>
     <AT_Setting_ResetDefCache>모든 Def 캐시 데이터 초기화 (몇몇 def들이 번역되지 않았을 경우)</AT_Setting_ResetDefCache>
@@ -22,13 +29,17 @@
     <AT_Setting_Cached>저장된 번역 데이터: </AT_Setting_Cached>
     <AT_Setting_NotYet>아직 번역되지 않은 데이터: </AT_Setting_NotYet>
     <AT_Setting_OpenDir>번역 데이터가 저장된 폴더 열기</AT_Setting_OpenDir>
-    <AT_Setting_WhiteList>번역할 모드 선택 (DefInjected에만 영향을 주며, 실시간으로 반영됩니다)</AT_Setting_WhiteList>
+    <AT_Setting_WhiteList>번역할 모드 선택 (실시간으로 반영됩니다)</AT_Setting_WhiteList>
     <AT_Setting_ResetTranslationCache>저장된 번역 데이터 삭제</AT_Setting_ResetTranslationCache>
     <AT_Setting_ToggleAll>전체 켜기/끄기</AT_Setting_ToggleAll>
     
 
     <AT_Message_ResetDefCache>Def 캐시가 초기화 되었습니다!</AT_Message_ResetDefCache>
-    <AT_Message_KeyedDone>모든 Keyed를 번역 완료하였습니다!</AT_Message_KeyedDone>
     <AT_Message_ResetTranslationCache>번역 데이터를 삭제하였습니다. 번역을 다시 하기 위해 게임을 재시작 하세요.</AT_Message_ResetTranslationCache>
     <AT_Message_WhiteList_Failed>아직 번역이 진행 중이라 실시간으로 반영되지 않습니다. 변경 사항이 적용되기 위해서는 번역이 완료된 후 재시도 하거나, 게임을 재시작 해야 합니다.</AT_Message_WhiteList_Failed>
+    <AT_Message_TestFailed>테스트에 실패했습니다. API 요청 제한에 걸린 것일 수도 있습니다. 혹은 API 키와 모델을 다시 확인해주세요.</AT_Message_TestFailed>
+    <AT_Setting_RestartWork>현재 번역기 설정으로 번역 재시작</AT_Setting_RestartWork>
+    <AT_Message_RestartWork>번역 작업을 다시 합니다... (완전히 다시하려면 번역 데이터도 삭제한 다음 재시작해주세요)</AT_Message_RestartWork>
+    <AT_Message_RestartFailed>재시작에 실패했습니다. API 키와 모델을 다시 확인해주세요.</AT_Message_RestartFailed>
+    <AT_Message_FailedToGetModels>모델 목록을 불러오는데 실패했습니다. API 키를 다시 확인해주세요: </AT_Message_FailedToGetModels>
 </LanguageData>

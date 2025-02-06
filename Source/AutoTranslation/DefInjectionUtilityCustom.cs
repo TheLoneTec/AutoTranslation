@@ -302,7 +302,7 @@ namespace AutoTranslation
                 if (!isCollection)
                 {
                     field.SetValue(parentObject, original);
-                    _injected = !_injected;
+                    _injected = false;
                     return;
                 }
 
@@ -321,9 +321,33 @@ namespace AutoTranslation
                         {
                             realList[i] = originalCollection[i];
                         }
-                        _injected = !_injected;
+
+                        _injected = false;
                     }
                 }
+            }
+
+            public void ClearTranslation()
+            {
+                if (_injected)
+                {
+                    UndoInject();
+                }
+
+                if (!isCollection)
+                {
+                    translated = null;
+                }
+                else
+                {
+                    lock (translatedCollection)
+                    {
+                        translatedCollection.Clear();
+                    }
+
+                }
+
+                _injected = false;
             }
         }
     }

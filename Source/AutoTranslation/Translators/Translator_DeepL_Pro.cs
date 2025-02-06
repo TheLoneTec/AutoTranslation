@@ -11,7 +11,7 @@ using Verse;
 
 namespace AutoTranslation.Translators
 {
-    internal class Translator_DeepL_Pro : Translator_DeepL
+    public class Translator_DeepL_Pro : Translator_DeepL
     {
         protected override string url => $"https://api.deepl.com/v2/translate";
 

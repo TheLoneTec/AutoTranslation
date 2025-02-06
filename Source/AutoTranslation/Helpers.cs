@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -53,6 +55,32 @@ namespace AutoTranslation
 
         public static string[] Tokenize(this string str) =>
             str.Split(new[] { ".\n", ". " }, StringSplitOptions.RemoveEmptyEntries);
+
+        public static string GetStringValueFromJson(this string json, string key)
+        {
+            var pattern = $"\"{key}\"\\s*:\\s*\"((?:\\\\\"|[^\"])*)\"";
+            var match = Regex.Match(json, pattern);
+            return match.Success ? match.Groups[1].Value.Replace("\\\"", "\"") : null;
+        }
+
+        public static List<string> GetStringValuesFromJson(this string json, string key)
+        {
+            var pattern = $"\"{key}\"\\s*:\\s*\"((?:\\\\\"|[^\"])*)\"";
+            var matches = Regex.Matches(json, pattern);
+            return matches.Cast<Match>().Select(match => match.Groups[1].Value.Replace("\\\"", "\"")).ToList();
+        }
+
+        public static string GetResponseAndReadText(this WebRequest request)
+        {
+            string raw;
+            using (var resp = request.GetResponse())
+            using (var stream = resp.GetResponseStream())
+            using (var reader = new StreamReader(stream))
+            {
+                raw = reader.ReadToEnd();
+            }
+            return raw;
+        }
 
         #region XmlHelpers
 

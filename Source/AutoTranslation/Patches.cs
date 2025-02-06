@@ -17,19 +17,6 @@ namespace AutoTranslation
     {
         private static bool _defInjectedMissingloaded, _keyedMissingLoaded;
 
-        internal static IEnumerable<Type> defTypesTranslated
-        {
-            get
-            {
-                var hashSet = new HashSet<Type>();
-                foreach (var @params in InjectionManager.defInjectedMissing)
-                {
-                    hashSet.Add(@params.defType);
-                }
-                return hashSet;
-            }
-        }
-
         [HarmonyPatch(typeof(LoadedLanguage)), HarmonyPatch(nameof(LoadedLanguage.InjectIntoData_AfterImpliedDefs)), HarmonyPostfix]
         public static void Postfix_LoadedLanguage_InjectIntoData_AfterImpliedDefs()
         {

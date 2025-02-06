@@ -9,7 +9,14 @@
     <AT_Setting_Note>Note: The settings below require a restart</AT_Setting_Note>
     <AT_Setting_SelectEngine>Select a translation engine (default: Google):</AT_Setting_SelectEngine>
     <AT_Setting_RequiresAPIKey>Using this translation engine requires an API Key.</AT_Setting_RequiresAPIKey>
+    <AT_Setting_RequiresAPIKey_Tooltip>To use multiple API keys in rotation, enter them separated by ',' characters.</AT_Setting_RequiresAPIKey_Tooltip>
     <AT_Setting_Test>Add '::TEST::' to translations (for testing)</AT_Setting_Test>
+    <AT_Setting_TestTranslation>&lt;= Testing translations</AT_Setting_TestTranslation>
+    <AT_Message_LanguageNotSupported>This translator does not support your language! Please use another one.</AT_Message_LanguageNotSupported>
+    <AT_Setting_SelectModel>Selected model: </AT_Setting_SelectModel>
+    <AT_Setting_SelectModelNone>NONE (Please select the model)</AT_Setting_SelectModelNone>
+    <AT_Setting_NoModelFound>No model found! Please check your api key.</AT_Setting_NoModelFound>
+    <AT_Setting_CustomPrompt>Custom system prompt: </AT_Setting_CustomPrompt>
 
     <AT_Setting_Misc>::Misc::</AT_Setting_Misc>
     <AT_Setting_ResetDefCache>Reset all Def cache data (If some defs are not translated)</AT_Setting_ResetDefCache>
@@ -21,12 +28,16 @@
     <AT_Setting_Cached>Cached translations: </AT_Setting_Cached>
     <AT_Setting_NotYet>Not translated yet: </AT_Setting_NotYet>
     <AT_Setting_OpenDir>Open the folder where the translation caches are stored</AT_Setting_OpenDir>
-    <AT_Setting_WhiteList>Select mods to translate (only affects DefInjected, and is applied in real-time)</AT_Setting_WhiteList>
+    <AT_Setting_WhiteList>Select mods to translate (applied in real-time)</AT_Setting_WhiteList>
     <AT_Setting_ResetTranslationCache>Delete the translation caches</AT_Setting_ResetTranslationCache>
     <AT_Setting_ToggleAll>Toggle all</AT_Setting_ToggleAll>
 
     <AT_Message_ResetDefCache>Def cache has been initialized!</AT_Message_ResetDefCache>
-    <AT_Message_KeyedDone>Translated all untranslated Keyed!</AT_Message_KeyedDone>
     <AT_Message_ResetTranslationCache>The translation caches are deleted, please restart the game to start the translation again.</AT_Message_ResetTranslationCache>
     <AT_Message_WhiteList_Failed>The translation is still in progress and will not be applied in real-time. You will need to retry after the translation is complete, or restart the game, for the changes to take effect.</AT_Message_WhiteList_Failed>
+    <AT_Message_TestFailed>The test failed, maybe API request limit reached. Or please check your model and API key again.</AT_Message_TestFailed>
+    <AT_Setting_RestartWork>Restart translation with current translator settings</AT_Setting_RestartWork>
+    <AT_Message_RestartWork>Restart the translation operation... (to completely redo it, delete the translation data as well, then restart)</AT_Message_RestartWork>
+    <AT_Message_RestartFailed>The restart failed, please check your model and API key again.</AT_Message_RestartFailed>
+    <AT_Message_FailedToGetModels>Failed to get models, please check your API key: </AT_Message_FailedToGetModels>
 </LanguageData>

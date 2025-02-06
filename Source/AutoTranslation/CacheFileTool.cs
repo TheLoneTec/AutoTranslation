@@ -28,6 +28,8 @@ namespace AutoTranslation
         public static void Export(string name, Dictionary<string, string> cache)
         {
             var doc = new XmlDocument();
+            Exception firstError = null;
+            var errorCount = 0;
             doc.AppendElement(name, e =>
             {
                 e.AppendAttribute("Language", LanguageDatabase.activeLanguage?.FriendlyNameEnglish ?? "NULL");
@@ -35,19 +37,28 @@ namespace AutoTranslation
                 lst.Sort((a, b) => string.Compare(a.Key, b.Key, StringComparison.Ordinal));
                 foreach (var (k, v) in lst)
                 {
-                    if (string.IsNullOrEmpty(k) || string.IsNullOrEmpty(v))
+                    var key = StripInvalidXmlChars(k);
+                    if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(v))
                         continue;
                     try
                     {
-                        e.AppendElement(k, v);
+                        e.AppendElement(key, v);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        // suppress
+                        firstError = firstError ?? ex;
+                        errorCount++;
                     }
                 }
             });
             doc.Save(Path.Combine(CacheDirectory, $"{name}.xml"));
+
+            if (errorCount > 0)
+            {
+                var msg = AutoTranslation.LogPrefix +
+                          $"Error on exporting cache: {firstError.Message}:{firstError.StackTrace} and {errorCount - 1} more errors.";
+                Log.ErrorOnce(msg, msg.GetHashCode());
+            }
         }
 
         public static IEnumerable<KeyValuePair<string, string>> Import(string name)
@@ -76,6 +87,12 @@ namespace AutoTranslation
             var path = Path.Combine(CacheDirectory, $"{name}.xml");
             if (File.Exists(path))
                 File.Delete(path);
+        }
+
+        private static string StripInvalidXmlChars(string text)
+        {
+            var validXmlChars = text.Where(XmlConvert.IsNCNameChar).ToArray();
+            return new string(validXmlChars);
         }
     }
 }

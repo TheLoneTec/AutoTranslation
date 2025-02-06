@@ -74,6 +74,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="APIKeyRotater.cs" />
     <Compile Include="DefInjectionUtilityCustom.cs" />
     <Compile Include="AutoTranslation.cs" />
     <Compile Include="Helpers.cs" />
@@ -87,13 +88,15 @@
     <Compile Include="InjectionManager.cs" />
     <Compile Include="TranslatorManager.cs" />
     <Compile Include="Translators\ITranslator.cs" />
+    <Compile Include="Translators\Translator_ChatGPT.cs" />
     <Compile Include="Translators\Translator_Claude.cs" />
     <Compile Include="Translators\Translator_DeepL_Pro.cs" />
     <Compile Include="Translators\Translator_DeepL.cs" />
-    <Compile Include="Translators\Translator_GeminiBase.cs" />
-    <Compile Include="Translators\Translator_GeminiFlash.cs" />
-    <Compile Include="Translators\Translator_GeminiPro.cs" />
+    <Compile Include="Translators\Translator_DeepSeek.cs" />
+    <Compile Include="Translators\Translator_Gemini.cs" />
     <Compile Include="Translators\Translator_Google.cs" />
+    <Compile Include="Translators\Translator_BaseOnlineAIModel.cs" />
+    <Compile Include="Translators\Translator_BaseTraditional.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
