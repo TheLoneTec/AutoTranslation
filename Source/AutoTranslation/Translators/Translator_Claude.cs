@@ -13,11 +13,15 @@ namespace AutoTranslation.Translators
     public class Translator_Claude : Translator_BaseOnlineAIModel
     {
         public override string Name => "Claude";
+
+        public override string BaseURL => "https://api.anthropic.com/v1/";
+
         public override List<string> GetModels()
         {
             try
             {
-                var url = "https://api.anthropic.com/v1/models";
+                //var url = "https://api.anthropic.com/v1/models";
+                var url = $"{RequestURL}models";
                 var request = WebRequest.Create(url);
                 request.Method = "GET";
                 request.Headers.Add("x-api-key", APIKey);
@@ -37,7 +41,8 @@ namespace AutoTranslation.Translators
 
         protected override string GetResponseUnsafe(string text)
         {
-            var url = "https://api.anthropic.com/v1/messages";
+            //var url = "https://api.anthropic.com/v1/messages";
+            var url = $"{RequestURL}messages";
             var requestBody = $@"{{
                 ""model"": ""{Model}"",
                 ""max_tokens"": 1024,

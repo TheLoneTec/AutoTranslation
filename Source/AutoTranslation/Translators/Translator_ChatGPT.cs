@@ -13,13 +13,15 @@ namespace AutoTranslation.Translators
     public class Translator_ChatGPT : Translator_BaseOnlineAIModel
     {
         public override string Name => "ChatGPT";
-        protected virtual string modelsUrl => "https://api.openai.com/v1/models";
-        protected virtual string chatUrl => "https://api.openai.com/v1/chat/completions";
+        public override string BaseURL => "https://api.openai.com/v1/";
+
+        protected virtual string RoleSystem => "developer";
+
         public override List<string> GetModels()
         {
             try
             {
-                var request = WebRequest.Create(modelsUrl);
+                var request = WebRequest.Create($"{RequestURL}models");
                 request.Method = "GET";
                 request.Headers.Add("Authorization", "Bearer " + APIKey);
 
@@ -41,7 +43,7 @@ namespace AutoTranslation.Translators
                 ""model"": ""{Model}"",
                 ""messages"": [
                   {{
-                    ""role"": ""system"",
+                    ""role"": ""{RoleSystem}"",
                     ""content"": ""{Prompt.EscapeJsonString()}""
                   }},
                   {{
@@ -51,7 +53,7 @@ namespace AutoTranslation.Translators
                 ]
             }}";
 
-            var request = WebRequest.Create(chatUrl);
+            var request = WebRequest.Create($"{RequestURL}chat/completions");
             request.Method = "POST";
             request.ContentType = "application/json";
             request.Headers.Add("Authorization", "Bearer " + APIKey);
@@ -62,6 +64,11 @@ namespace AutoTranslation.Translators
             }
 
             return request.GetResponseAndReadText();
+        }
+
+        protected override string ParseResponse(string response)
+        {
+            return response.GetStringValueFromJson("content").Trim();
         }
     }
 }

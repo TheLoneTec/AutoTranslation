@@ -14,13 +14,16 @@ namespace AutoTranslation.Translators
     public class Translator_Gemini : Translator_BaseOnlineAIModel
     {
         public override string Name => "Gemini";
+
+        public override string BaseURL => "https://generativelanguage.googleapis.com/v1beta/";
+
         public override List<string> GetModels()
         {
             try
             {
                 var key = APIKey;
-                Log.Message("CurrentKey: " + key);
-                var url = $"https://generativelanguage.googleapis.com/v1beta/models?key={key}";
+                //var url = $"https://generativelanguage.googleapis.com/v1beta/models?key={key}";
+                var url = $"{RequestURL}models?key={key}";
                 var request = WebRequest.Create(url);
                 request.Method = "GET";
 
@@ -39,7 +42,8 @@ namespace AutoTranslation.Translators
 
         protected override string GetResponseUnsafe(string text)
         {
-            var url = $"https://generativelanguage.googleapis.com/v1beta/models/{Model}:generateContent?key={APIKey}";
+            //var url = $"https://generativelanguage.googleapis.com/v1beta/models/{Model}:generateContent?key={APIKey}";
+            var url = $"{RequestURL}models/{Model}:generateContent?key={APIKey}";
             var requestBody = $@"{{
 	            ""contents"": [
 		            {{

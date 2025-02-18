@@ -22,6 +22,7 @@ namespace AutoTranslation
         public static HashSet<string> WhiteListModPackageIds = new HashSet<string>();
 
         public static string SelectedModel = string.Empty;
+        public static string CustomBaseURL = string.Empty;
         public static string CustomPrompt = string.Empty;
 
         private static List<ModContentPack> AllMods => _allModsCached ?? (_allModsCached = LoadedModManager.RunningMods.ToList());
@@ -39,6 +40,7 @@ namespace AutoTranslation
             Scribe_Values.Look(ref TranslatorName, "AutoTranslation_TranslatorName", "Google");
             Scribe_Values.Look(ref ShowOriginal, "AutoTranslation_ShowOriginal", false);
             Scribe_Values.Look(ref SelectedModel, "AutoTranslation_SelectedModel", string.Empty);
+            Scribe_Values.Look(ref CustomBaseURL, "AutoTranslation_CustomBaseURL", string.Empty);
             Scribe_Values.Look(ref CustomPrompt, "AutoTranslation_CustomPrompt", string.Empty);
             Scribe_Collections.Look(ref WhiteListModPackageIds, "AutoTranslation_WhiteListModPackageIds", LookMode.Value);
             if (WhiteListModPackageIds == null) WhiteListModPackageIds = new HashSet<string>();
@@ -227,8 +229,14 @@ namespace AutoTranslation
 
             if (targetTranslator is Translator_BaseOnlineAIModel aiTranslator)
             {
+                ls.Label("AT_Setting_BaseURL".Translate() + aiTranslator.BaseURL);
+                var textRect = ls.GetRect(Text.LineHeight);
+                CustomBaseURL = Widgets.TextEntryLabeled(textRect, "AT_Setting_CustomBaseURL".Translate(), CustomBaseURL);
+
                 if (Widgets.ButtonText(ls.GetRect(28f), "AT_Setting_SelectModel".Translate() + (string.IsNullOrEmpty(SelectedModel) ? (string)"AT_Setting_SelectModelNone".Translate() : SelectedModel)))
                 {
+                    aiTranslator.ResetSettings();
+
                     var list = aiTranslator.Models?.Select(m =>
                         new FloatMenuOption(
                             m,

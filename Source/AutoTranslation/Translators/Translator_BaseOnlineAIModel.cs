@@ -18,6 +18,8 @@ namespace AutoTranslation.Translators
         public virtual string Model => _model ?? (_model = Settings.SelectedModel);
         public List<string> Models => _models ?? (_models = GetModels());
 
+        public abstract string BaseURL { get; }
+
         public virtual void Prepare()
         {
             if (string.IsNullOrEmpty(Settings.APIKey)) return;
@@ -86,8 +88,10 @@ namespace AutoTranslation.Translators
         public void ResetSettings()
         {
             _model = null;
+            _models = null;
             _rotater = null;
             _prompt = null;
+            _baseURL = null;
             Prepare();
         }
 
@@ -104,11 +108,36 @@ namespace AutoTranslation.Translators
             _rotater == null ? (_rotater = new APIKeyRotater(Settings.APIKey.Split(','))).Key : _rotater.Key;
         protected string Prompt => _prompt ?? (_prompt = string.IsNullOrEmpty(Settings.CustomPrompt.Trim()) ? BasePrompt : Settings.CustomPrompt.Trim());
 
+        protected string RequestURL
+        {
+            get
+            {
+                if (_baseURL == null)
+                {
+                    var url = Settings.CustomBaseURL;
+                    if (string.IsNullOrEmpty(url))
+                    {
+                        url = BaseURL;
+                    }
+                    
+                    if (!url.EndsWith("/"))
+                    {
+                        url += "/";
+                    }
+
+                    _baseURL = url;
+                }
+
+                return _baseURL;
+            }
+        }
+
 
         protected APIKeyRotater _rotater = null;
 
         private List<string> _models;
         private string _model = null;
         private string _prompt = null;
+        private string _baseURL = null;
     }
 }

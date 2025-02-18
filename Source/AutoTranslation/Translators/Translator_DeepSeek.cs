@@ -9,7 +9,9 @@ namespace AutoTranslation.Translators
     public class Translator_DeepSeek : Translator_ChatGPT
     {
         public override string Name => "DeepSeek";
-        protected override string modelsUrl => "https://api.openai.com/v1/models";
-        protected override string chatUrl => "https://api.deepseek.com/chat/completions";
+
+        protected override string RoleSystem => "system";
+
+        public override string BaseURL => "https://api.deepseek.com/";
     }
 }
